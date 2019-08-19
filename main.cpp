@@ -1,27 +1,32 @@
 #include <iostream>
+#include <csignal>
+#include <windows.h>
+
 using namespace std;
 
-double division(int a, int b)
+void signalHandler(int signum)
 {
-	if (b == 0)
-	{
-		throw "Division by zero condition!";
-	}
-	return (a / b);
+	cout << "Interrupt signal (" << signum << ") received.\n";
+
+	// 清理并关闭
+	// 终止程序 
+
+	exit(signum);
+
 }
 
 int main()
 {
-	int x = 50;
-	int y = 0;
-	double z = 0;
+	int i = 0;
+	// 注册信号 SIGINT 和信号处理程序
+	signal(SIGINT, signalHandler);
 
-	try {
-		z = division(x, y);
-		cout << z << endl;
-	}
-	catch (const char* msg) {
-		cerr << msg << endl;
+	while (++i) {
+		cout << "Going to sleep...." << endl;
+		if (i == 3) {
+			raise(SIGINT);
+		}
+		Sleep(1);
 	}
 
 	return 0;
